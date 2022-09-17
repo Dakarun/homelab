@@ -2,7 +2,6 @@ job "prometheus" {
   datacenters = ["dc1"]
   type        = "service"
 
-
   group "monitoring" {
     count = 1
 
@@ -37,6 +36,11 @@ job "prometheus" {
         volume = "prometheus"
         destination = "/prometheus"
         read_only = false
+      }
+
+      resources {
+        cpu    = 256
+        memory = 512
       }
 
       template {
@@ -108,8 +112,6 @@ EOH
 #          timeout  = "2s"
 #        }
       }
-
-
     }
 
     task "grafana" {
