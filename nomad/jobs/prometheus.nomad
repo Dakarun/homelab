@@ -1,3 +1,9 @@
+locals {
+  dashboards = [
+    "node-exporter-full.json"
+  ]
+}
+
 job "prometheus" {
   datacenters = ["dc1"]
   type        = "service"
@@ -74,6 +80,11 @@ scrape_configs:
   - job_name: 'desktop_metrics'
     static_configs:
     - targets: ['100.83.146.51:9182']
+
+  - job_name: 'homelab_metrics'
+    static_configs:
+    - targets: ['homelab-1:9100']
+
 EOH
       }
 
@@ -157,7 +168,7 @@ EOH
       }
 
       template {
-        destination = "local/grafana/provisioning/datasources/prometheus.yaml"
+        destination = "/local/grafana/provisioning/datasources/prometheus.yaml"
         data = <<EOH
 apiVersion: 1
 datasources:
@@ -171,6 +182,21 @@ datasources:
         datasourceUid: tempo
 EOH
       }
+
+      # Dashboard setup
+      dynamic template {
+        for_each = local.dashboards
+
+        content {
+          data      = file("resources/grafana/dashboards/${template.value}")
+          destination = "/local/grafana/provisioning/dashboards/${template.value}"
+        }
+      }
+
+#      template {
+#        source = "resources/grafana/dashboards/node-exporter-full.json"
+#        destination = "/local/grafana/provisioning/dashboards/node-exporter-full.json"
+#      }
 
       service {
         name = "grafana"
