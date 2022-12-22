@@ -1,6 +1,7 @@
 locals {
   dashboards = [
-    "node-exporter-full.json"
+    "node-exporter-full.json",
+    "windows-exporter-dashboard.json"
   ]
 }
 
@@ -79,7 +80,7 @@ scrape_configs:
 
   - job_name: 'desktop_metrics'
     static_configs:
-    - targets: ['100.83.146.51:9182']
+    - targets: ['desktop-hr18u8t:9182']
 
   - job_name: 'homelab_metrics'
     static_configs:
@@ -183,6 +184,21 @@ datasources:
 EOH
       }
 
+      template {
+        destination = "/local/grafana/provisioning/dashboards/dashboards.yaml"
+        data = <<EOH
+apiVersion: 1
+
+providers:
+  - name: dashboards
+    type: file
+    updateIntervalSeconds: 30
+    options:
+      path: /local/grafana/provisioning/dashboards/
+      foldersFromFilesStructure: true
+EOH
+      }
+
       # Dashboard setup
       dynamic template {
         for_each = local.dashboards
@@ -194,11 +210,6 @@ EOH
           right_delimiter = "}}}}"
         }
       }
-
-#      template {
-#        source = "resources/grafana/dashboards/node-exporter-full.json"
-#        destination = "/local/grafana/provisioning/dashboards/node-exporter-full.json"
-#      }
 
       service {
         name = "grafana"
