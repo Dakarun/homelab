@@ -190,6 +190,8 @@ EOH
         content {
           data      = file("resources/grafana/dashboards/${template.value}")
           destination = "/local/grafana/provisioning/dashboards/${template.value}"
+          left_delimiter = "{{{{"
+          right_delimiter = "}}}}"
         }
       }
 
