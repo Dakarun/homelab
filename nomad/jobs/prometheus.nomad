@@ -63,16 +63,13 @@ global:
 scrape_configs:
 
   - job_name: 'nomad_metrics'
-
     consul_sd_configs:
     - server: '{{ env "NOMAD_IP_prometheus_ui" }}:8500'
       services: ['nomad-client', 'nomad']
-
     relabel_configs:
     - source_labels: ['__meta_consul_tags']
       regex: '(.*)http(.*)'
       action: keep
-
     scrape_interval: 5s
     metrics_path: /v1/metrics
     params:
@@ -131,9 +128,6 @@ EOH
       config {
         image = "grafana/grafana"
         ports = ["http"]
-#        volumes = [
-#          "local/grafana/config.ini:/usr/share/grafana/conf/config.ini"
-#        ]
       }
 
       resources {
