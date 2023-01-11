@@ -47,6 +47,8 @@ job "traefik" {
     address = ":8080"
     [entryPoints.traefik]
     address = ":8081"
+    [entryPoints.openmw]
+    address = ":25566/udp"
 
 [api]
     dashboard = true
