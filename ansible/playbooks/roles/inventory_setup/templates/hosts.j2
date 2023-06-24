@@ -1,0 +1,6 @@
+{% for section, hosts in ansible_static_inventory.items() %}
+[{{ section }}]
+{% for host in hosts %}
+{{ host }}
+{% endfor +%}
+{% endfor %}

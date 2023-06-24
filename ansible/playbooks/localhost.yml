@@ -1,0 +1,5 @@
+
+- hosts: localhost
+  become: true
+  roles:
+    - { role: inventory_setup, tags: ["inventory_setup"] }

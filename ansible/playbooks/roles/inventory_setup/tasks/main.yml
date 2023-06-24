@@ -1,0 +1,10 @@
+- name: Create /etc/ansible/
+  file:
+    path: /etc/ansible/
+    state: directory
+
+- name: Setup /etc/ansible/hosts
+  ansible.builtin.template:
+    src: hosts.j2
+    dest: /etc/ansible/hosts
+    mode: 0644

@@ -1,0 +1,4 @@
+- name: Install certbot
+  community.general.snap:
+    name: certbot
+    classic: true
