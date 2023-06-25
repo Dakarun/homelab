@@ -2,3 +2,18 @@
   community.general.snap:
     name: certbot
     classic: true
+
+- name: Symlink certbot
+  ansible.builtin.file:
+    src:  /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
+
+- name: Confirm containment level
+  command: snap set certbot trust-plugin-with-root=ok
+
+- name: Checkout namecheap plugin
+  ansible.builtin.git:
+    repo: "https://github.com/iHamsterball/certbot-dns-namecheap.git"
+    dest: /opt/certbot/plugins/cerbot-dns-namecheap
+    version: c1f7cdd

@@ -1,0 +1,3 @@
+# Namecheap API credentials used by Certbot
+certbot_dns_namecheap:dns_namecheap_username={{ namecheap_username }}
+certbot_dns_namecheap:dns_namecheap_api_key={{ namecheap_api_token }}
