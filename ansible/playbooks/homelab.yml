@@ -1,0 +1,9 @@
+
+- hosts: homelab
+  become: true
+  vars:
+    certbot_home: /opt/certbot/
+    namecheap_username: lookup('amazon.aws.aws_ssm', '/core/namecheap/username')
+    namecheap_api_token: lookup('amazon.aws.aws_ssm', '/core/namecheap/api_token')
+  roles:
+    - { role: certbot, tags: ["certbot"] }

@@ -1,19 +1,50 @@
-- name: Install certbot
-  community.general.snap:
+#- name: Install certbot
+#  community.general.snap:
+#    name: certbot
+#    classic: true
+#
+#- name: Symlink certbot
+#  ansible.builtin.file:
+#    src:  /snap/bin/certbot
+#    dest: /usr/bin/certbot
+#    state: link
+#
+#- name: Confirm containment level
+#  command: snap set certbot trust-plugin-with-root=ok
+
+- name: Setup certbot home
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ certbot_home }}"
+    - "{{ certbot_home }}plugins/"
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    pkg:
+      - python3
+      - python3-virtualenv
+      - libaugeas0
+
+- name: Install certbot into a venv
+  ansible.builtin.pip:
     name: certbot
-    classic: true
+    virtualenv: "{{ certbot_home }}venv"
 
 - name: Symlink certbot
   ansible.builtin.file:
-    src:  /snap/bin/certbot
+    src:  "{{ certbot_home }}venv/bin/certbot"
     dest: /usr/bin/certbot
     state: link
 
-- name: Confirm containment level
-  command: snap set certbot trust-plugin-with-root=ok
-
 - name: Checkout namecheap plugin
   ansible.builtin.git:
-    repo: "https://github.com/iHamsterball/certbot-dns-namecheap.git"
-    dest: /opt/certbot/plugins/cerbot-dns-namecheap
-    version: c1f7cdd
+    repo: "https://github.com/knoxell/certbot-dns-namecheap.git"
+    dest: "{{ certbot_home }}plugins/certbot-dns-namecheap"
+    version: 36b5567
+
+- name: Install namecheap plugin
+  ansible.builtin.pip:
+    name: "file://{{ certbot_home }}plugins/certbot-dns-namecheap"
+    virtualenv: "{{ certbot_home }}venv"
